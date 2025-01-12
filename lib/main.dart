@@ -1,42 +1,42 @@
 import 'package:flutter/material.dart';
-import './pages/staff_login.dart';
-import './pages/parent_login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:kindersafeapp/widget_tree.dart';
+import 'package:kindersafeapp/pages/staff_login.dart';
+import 'package:kindersafeapp/pages/parent_login.dart';
 
-
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Kinder Safe',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const WelcomeScreen(),
-      // Define routes if needed
+      initialRoute: '/',
       routes: {
+        '/': (context) => const WelcomeScreen(),
         '/index': (context) => const IndexPage(),
         '/staffLogin': (context) => const StaffLoginPage(),
         '/parentLogin': (context) => const ParentLoginPage(),
+        '/widgetTree': (context) => const WidgetTree(), // Add WidgetTree for authentication flow
       },
     );
   }
 }
 
-class WelcomeScreen extends StatefulWidget {
+class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
-  @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
-}
-
-class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,52 +45,44 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/indexscreen.png',
-                fit: BoxFit.cover,
-              ),
+      body: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/indexscreen.png',
+              fit: BoxFit.cover,
             ),
-            Positioned(
-              bottom: 100,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the IndexPage
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const IndexPage()),
-                    );
-                    // Alternatively, using named routes:
-                    // Navigator.pushNamed(context, '/index');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple.shade700,
-                    minimumSize: const Size(220, 60),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+          ),
+          // Start button
+          Positioned(
+            bottom: 100,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/index');
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple.shade700,
+                  minimumSize: const Size(220, 60),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Text(
-                    'Start',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                child: const Text(
+                  'Start',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -116,8 +108,7 @@ class IndexPage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-
-          // Two buttons (Staff, Parent) aligned at the bottom
+          // Two buttons (Staff, Parent)
           Positioned(
             bottom: 150,
             left: 0,
@@ -128,14 +119,7 @@ class IndexPage extends StatelessWidget {
                 // Staff Button
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const StaffLoginPage(),
-                      ),
-                    );
-                    // Alternatively, using named routes:
-                    // Navigator.pushNamed(context, '/staffLogin');
+                    Navigator.pushNamed(context, '/staffLogin');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple.shade700,
@@ -152,18 +136,10 @@ class IndexPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 // Parent Button
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ParentLoginPage(),
-                      ),
-                    );
-                    // Alternatively, using named routes:
-                    // Navigator.pushNamed(context, '/parentLogin');
+                    Navigator.pushNamed(context, '/parentLogin');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple.shade700,
@@ -188,44 +164,3 @@ class IndexPage extends StatelessWidget {
     );
   }
 }
-
-// // Placeholder for StaffLoginPage
-// class StaffLoginPage extends StatelessWidget {
-//   const StaffLoginPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Colors.purple.shade700,
-//       ),
-//       body: Center(
-//         child: Text(
-//           'Staff Login Page',
-//           style: TextStyle(fontSize: 24),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// // Placeholder for ParentLoginPage
-// class ParentLoginPage extends StatelessWidget {
-//   const ParentLoginPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Parent Login'),
-//         backgroundColor: Colors.purple.shade700,
-//       ),
-//       body: Center(
-//         child: Text(
-//           'Parent Login Page',
-//           style: TextStyle(fontSize: 24),
-//         ),
-//       ),
-//     );
-//   }
-// }
