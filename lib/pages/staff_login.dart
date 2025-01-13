@@ -255,15 +255,15 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
                               style: TextStyle(color: Colors.deepPurple),
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/register');
-                            },
-                            child: const Text(
-                              'Register',
-                              style: TextStyle(color: Colors.deepPurple),
-                            ),
-                          ),
+                          // TextButton(
+                          //   onPressed: () {
+                          //     Navigator.pushNamed(context, '/register');
+                          //   },
+                          //   child: const Text(
+                          //     'Register',
+                          //     style: TextStyle(color: Colors.deepPurple),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],

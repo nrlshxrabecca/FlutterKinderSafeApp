@@ -37,6 +37,11 @@ dependencies:
   # Firebase Auth plugin
   firebase_auth: ^5.1.4
 
+  cloud_firestore: 5.6.1
+
+  image_picker: ^1.1.2
+
+
   # (Optional) For Cloud Firestore, storage, etc., if you need them
   # cloud_firestore: ^4.5.0
   # firebase_storage: ^11.0.0
@@ -76,7 +81,10 @@ flutter:
   assets:
     - assets/images/logo_kindersafeapp.jpeg
     - assets/images/indexscreen.png
-
+    - assets/images/dashboard.png
+    - assets/icons/report.png
+    - assets/icons/profile.png
+    - assets/icons/profile_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
