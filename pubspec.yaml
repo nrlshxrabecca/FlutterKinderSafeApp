@@ -82,6 +82,7 @@ flutter:
     - assets/images/logo_kindersafeapp.jpeg
     - assets/images/indexscreen.png
     - assets/images/dashboard.png
+    - assets/images/report.png
     - assets/icons/report.png
     - assets/icons/profile.png
     - assets/icons/profile_icon.png

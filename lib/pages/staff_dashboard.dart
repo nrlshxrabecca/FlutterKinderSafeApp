@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kindersafeapp/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kindersafeapp/pages/report_page.dart';
 import 'staff_login.dart';
 import 'staff_profile.dart';
 
@@ -14,7 +15,7 @@ class StaffDashboard extends StatefulWidget {
 
 class _StaffDashboardState extends State<StaffDashboard> {
   final User? user = Auth().currentUser;
-  String? userName = 'Loading...';
+  String userName = 'Loading...';
   String? _profileImage;
 
   @override
@@ -23,6 +24,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
     _fetchUserData();
   }
 
+  // Fetch user data from Firestore
   Future<void> _fetchUserData() async {
     if (user != null) {
       final userDoc = await FirebaseFirestore.instance
@@ -37,6 +39,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
     }
   }
 
+  // Sign out the user
   Future<void> signOut(BuildContext context) async {
     try {
       await Auth().signOut();
@@ -125,7 +128,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            userName ?? 'Teacher',
+                            userName,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -139,14 +142,14 @@ class _StaffDashboardState extends State<StaffDashboard> {
                 ),
                 const SizedBox(height: 30),
 
-                // Recent Profiles
+                // Recent Profiles Section
                 const _RecentProfiles(
                   size: 70,
                   backgroundColor: Colors.lightBlueAccent,
                 ),
                 const SizedBox(height: 20),
 
-                // Profile Settings and Report
+                // Profile Settings and Report Section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -157,8 +160,8 @@ class _StaffDashboardState extends State<StaffDashboard> {
                       size: MediaQuery.of(context).size.width * 0.4,
                       backgroundColor: Colors.red.shade50,
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Report Page Coming Soon!")),
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const ReportPage()),
                         );
                       },
                     ),
@@ -170,8 +173,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
                       backgroundColor: Colors.orange.shade50,
                       onPressed: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const ProfileSettingsPage()),
+                          MaterialPageRoute(builder: (context) => const ProfileSettingsPage()),
                         );
                       },
                     ),
@@ -179,7 +181,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
                 ),
                 const SizedBox(height: 20),
 
-                // Scanner
+                // Scanner Section
                 Center(
                   child: _ActionButton(
                     icon: Icons.qr_code_scanner,

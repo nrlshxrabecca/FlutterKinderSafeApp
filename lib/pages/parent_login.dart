@@ -7,7 +7,7 @@ class ParentLoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Parent Login'),
+        title: const Text('Parent Function Coming Soon'),
       ),
       body: const Center(
         child: Text(
