@@ -22,7 +22,8 @@ class _StudentProfileState extends State<StudentProfile> {
   Future<void> _fetchStudentData() async {
     try {
       final doc = await FirebaseFirestore.instance
-          .collection('students') // Ensure this matches your Firestore collection
+          .collection(
+              'students') // Ensure this matches your Firestore collection
           .doc(widget.studentId)
           .get();
 
@@ -68,7 +69,8 @@ class _StudentProfileState extends State<StudentProfile> {
                       Center(
                         child: CircleAvatar(
                           radius: 50,
-                          backgroundImage: _getProfileImage(studentData!['profileImage']),
+                          backgroundImage:
+                              _getProfileImage(studentData!['profileImage']),
                           backgroundColor: Colors.grey[300],
                         ),
                       ),
@@ -98,27 +100,27 @@ class _StudentProfileState extends State<StudentProfile> {
 
   ImageProvider _getProfileImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
-      return const AssetImage('assets/icons/default_profile.png');
+      return const AssetImage('assets/icons/profile_icon.png');
     }
     try {
       return NetworkImage(imageUrl);
     } catch (e) {
-      return const AssetImage('assets/icons/default_profile.png');
+      return const AssetImage('assets/icons/profile_icon.png');
     }
   }
 
   List<Widget> _buildStudentDetails() {
     final details = {
       'Name': studentData?['name'] ?? 'N/A',
-      'Full Name': studentData?['fullName'] ?? 'N/A',
-      'Date of Birth': studentData?['dob'] ?? 'N/A',
+      'Full Name': studentData?['fullname'] ?? 'N/A',
+      'Student ID': studentData?['studentID'] ?? 'N/A',
+      'Class Name': studentData?['classname'] ?? 'N/A',
+      'Age': (studentData?['age'] ?? 'N/A').toString(),
       'Gender': studentData?['gender'] ?? 'N/A',
+      'Guardian Name': studentData?['parentName'] ?? 'N/A',
       'Address': studentData?['address'] ?? 'N/A',
       'Phone': studentData?['phone'] ?? 'N/A',
-      'Emergency Contact Name': studentData?['emergencyContactDetails'] ?? 'N/A',
-      'Emergency Contact Phone': studentData?['emergencyContactPhone'] ?? 'N/A',
       'Parent Email': studentData?['parentEmail'] ?? 'N/A',
-      'Class Name': studentData?['classname'] ?? 'N/A',
     };
 
     return details.entries
