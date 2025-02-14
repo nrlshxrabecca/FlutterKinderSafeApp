@@ -12,7 +12,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     namespace = "com.example.kindersafeapp"
 
-    compileSdkVersion 34
+    compileSdkVersion 33
 
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion

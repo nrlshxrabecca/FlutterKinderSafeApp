@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kindersafeapp/pages/report_page.dart';
 import 'staff_login.dart';
 import 'staff_profile.dart';
+import '../screens/qr_scanner.dart';
 
 class StaffDashboard extends StatefulWidget {
   const StaffDashboard({Key? key}) : super(key: key);
@@ -143,7 +144,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
                 const SizedBox(height: 30),
 
                 // Recent Profiles Section
-                const _RecentProfiles(
+                const RecentProfiles(
                   size: 70,
                   backgroundColor: Colors.lightBlueAccent,
                 ),
@@ -189,10 +190,22 @@ class _StaffDashboardState extends State<StaffDashboard> {
                     color: Colors.black,
                     size: MediaQuery.of(context).size.width * 0.4,
                     backgroundColor: Colors.green.shade50,
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Scanner Coming Soon!")),
+                    // onPressed: () {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text("Scanner Coming Soon!")),
+                    //   );
+                    // },
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => QRScannerScreen()),
                       );
+
+                      if (result != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Scanned QR: $result")),
+                        );
+                      }
                     },
                   ),
                 ),
@@ -206,15 +219,60 @@ class _StaffDashboardState extends State<StaffDashboard> {
 }
 
 // Widget for Recent Profiles
-class _RecentProfiles extends StatelessWidget {
+class RecentProfiles extends StatefulWidget {
   final double size;
   final Color backgroundColor;
 
-  const _RecentProfiles({
+  const RecentProfiles({
     Key? key,
     required this.size,
     required this.backgroundColor,
   }) : super(key: key);
+
+  @override
+  _RecentProfilesState createState() => _RecentProfilesState();
+}
+
+class _RecentProfilesState extends State<RecentProfiles> {
+  List<Map<String, dynamic>> recentProfiles = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecentProfiles();
+  }
+
+  Future<void> _fetchRecentProfiles() async {
+    try {
+      DateTime today = DateTime.now();
+      DateTime startOfDay = DateTime(today.year, today.month, today.day);
+      
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('students')
+          .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+          .orderBy('timestamp', descending: true) // Latest first
+          .limit(4) // Limit to 4 recent profiles
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        setState(() {
+          recentProfiles =
+              querySnapshot.docs.map((doc) => doc.data()).toList();
+        });
+      } else {
+        setState(() {
+          recentProfiles = [];
+        });
+      }
+    } catch (e) {
+      print("Error fetching recent profiles: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,50 +281,59 @@ class _RecentProfiles extends StatelessWidget {
       height: 150,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Stack(
-        children: [
-          // Circular placeholders
-          Row(
-            children: List.generate(
-              4,
-              (index) => Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: CircleAvatar(
-                  radius: size / 2,
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(
-                    Icons.person,
-                    size: size / 2,
-                    color: Colors.black54,
+      child: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : recentProfiles.isEmpty
+              ? const Center(
+                  child: Text(
+                    "No recent record found",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+                )
+              : Stack(
+                  children: [
+                    Row(
+                      children: recentProfiles.map((profile) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: CircleAvatar(
+                            radius: widget.size / 2,
+                            backgroundImage: _getProfileImage(profile['profileImage']),
+                            backgroundColor: Colors.grey[300],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: TextButton(
+                        onPressed: () {
+                          // Navigate to full list of profiles
+                        },
+                        child: const Text(
+                          'See More',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-          ),
-          // "See More" link
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: TextButton(
-              onPressed: () {
-                // Add See More functionality
-              },
-              child: const Text(
-                'See More',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
+  }
+
+  ImageProvider _getProfileImage(String? imageUrl) {
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return const AssetImage('assets/icons/profile_icon.png');
+    }
+    return NetworkImage(imageUrl);
   }
 }
 
