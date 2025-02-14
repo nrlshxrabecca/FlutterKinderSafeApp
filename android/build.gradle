@@ -4,6 +4,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+       // Add the Android Gradle Plugin (AGP)
+        classpath 'com.android.tools.build:gradle:8.2.1'
+        
         // Add the Google Services plugin
         classpath 'com.google.gms:google-services:4.3.15'
     }
