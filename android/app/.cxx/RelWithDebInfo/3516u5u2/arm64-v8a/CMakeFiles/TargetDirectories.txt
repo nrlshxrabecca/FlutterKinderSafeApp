@@ -1,0 +1,2 @@
+C:/Users/User/Shahira/SHCIWA/FlutterKinderSafeApp/android/app/.cxx/RelWithDebInfo/3516u5u2/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/User/Shahira/SHCIWA/FlutterKinderSafeApp/android/app/.cxx/RelWithDebInfo/3516u5u2/arm64-v8a/CMakeFiles/rebuild_cache.dir
